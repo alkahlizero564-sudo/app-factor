@@ -9,12 +9,12 @@ on:
       platform:
         description: "Platform to build"
         required: true
-        default: "all"
+        default: "android"
         type: choice
         options:
-          - all
           - android
           - ios
+          - all
 
 jobs:
   build:
@@ -39,9 +39,9 @@ jobs:
           packager: npm
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Build (push to main → both platforms, non-interactive)
+      - name: Build (push to main → Android only, non-interactive)
         if: github.event_name == 'push'
-        run: eas build --platform all --non-interactive --no-wait
+        run: eas build --platform android --non-interactive --no-wait
 
       - name: Build (manual dispatch → chosen platform)
         if: github.event_name == 'workflow_dispatch'
