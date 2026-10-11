@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "App Factory",
+    "slug": "app-factory",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.yourname.appfactory",
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
+    },
+    "ios": {
+      "bundleIdentifier": "com.yourname.appfactory"
+    },
+    "plugins": ["expo-secure-store"]
+  }
+}
