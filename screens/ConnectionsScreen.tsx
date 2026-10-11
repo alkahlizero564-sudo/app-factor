@@ -3,6 +3,7 @@ import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView, Activi
 import * as SecureStore from "expo-secure-store";
 import { testGithubConnection } from "../services/github";
 import { testSupabaseConnection } from "../services/supabase";
+import { testGeminiConnection, testClaudeConnection } from "../services/ai";
 
 function Field({ label, storeKey, secure = true, placeholder }: { label: string; storeKey: string; secure?: boolean; placeholder?: string }) {
   const [value, setValue] = useState("");
@@ -37,6 +38,10 @@ export default function ConnectionsScreen() {
   const [supabaseResult, setSupabaseResult] = useState<string | null>(null);
   const [loadingGithub, setLoadingGithub] = useState(false);
   const [loadingSupabase, setLoadingSupabase] = useState(false);
+  const [geminiResult, setGeminiResult] = useState<string | null>(null);
+  const [claudeResult, setClaudeResult] = useState<string | null>(null);
+  const [loadingGemini, setLoadingGemini] = useState(false);
+  const [loadingClaude, setLoadingClaude] = useState(false);
 
   async function handleTestGithub() {
     setLoadingGithub(true);
@@ -64,6 +69,32 @@ export default function ConnectionsScreen() {
     }
   }
 
+  async function handleTestGemini() {
+    setLoadingGemini(true);
+    setGeminiResult(null);
+    try {
+      const r = await testGeminiConnection();
+      setGeminiResult(`✅ متصل، عدد النماذج المتاحة: ${r.modelCount}`);
+    } catch (e: any) {
+      setGeminiResult(`❌ ${e.message}`);
+    } finally {
+      setLoadingGemini(false);
+    }
+  }
+
+  async function handleTestClaude() {
+    setLoadingClaude(true);
+    setClaudeResult(null);
+    try {
+      await testClaudeConnection();
+      setClaudeResult(`✅ متصل بنجاح`);
+    } catch (e: any) {
+      setClaudeResult(`❌ ${e.message}`);
+    } finally {
+      setLoadingClaude(false);
+    }
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.section}>GitHub</Text>
@@ -85,6 +116,26 @@ export default function ConnectionsScreen() {
       </TouchableOpacity>
       {loadingSupabase && <ActivityIndicator style={{ marginTop: 8 }} />}
       {supabaseResult && <Text style={styles.result}>{supabaseResult}</Text>}
+
+      <View style={{ height: 24 }} />
+
+      <Text style={styles.section}>Gemini</Text>
+      <Field label="API Key" storeKey="GEMINI_API_KEY" placeholder="AIza..." />
+      <TouchableOpacity style={styles.testBtn} onPress={handleTestGemini}>
+        <Text style={{ color: "white" }}>اختبار اتصال Gemini</Text>
+      </TouchableOpacity>
+      {loadingGemini && <ActivityIndicator style={{ marginTop: 8 }} />}
+      {geminiResult && <Text style={styles.result}>{geminiResult}</Text>}
+
+      <View style={{ height: 24 }} />
+
+      <Text style={styles.section}>Claude</Text>
+      <Field label="API Key" storeKey="CLAUDE_API_KEY" placeholder="sk-ant-..." />
+      <TouchableOpacity style={styles.testBtn} onPress={handleTestClaude}>
+        <Text style={{ color: "white" }}>اختبار اتصال Claude</Text>
+      </TouchableOpacity>
+      {loadingClaude && <ActivityIndicator style={{ marginTop: 8 }} />}
+      {claudeResult && <Text style={styles.result}>{claudeResult}</Text>}
     </ScrollView>
   );
 }
