@@ -5,6 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#111111",
+      "resizeMode": "contain"
+    },
     "android": {
       "package": "com.yourname.appfactory",
       "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
@@ -19,4 +23,4 @@
       }
     }
   }
-}
+} 
